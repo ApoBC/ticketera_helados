@@ -37,6 +37,8 @@ class TicketController extends Controller
                         ->first();
         $nextNumber = $lastToday ? ((int) substr($lastToday->ticket_number, -4)) + 1 : 1;
         $ticketNumber = Carbon::now()->format('Ymd') . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        // Al cargar los productos para el formulario de agregar
+$productos = Product::whereIn('category', ['helado', 'postre', 'bebida'])->get();
 
         $ticket = Ticket::create([
             'ticket_number' => $ticketNumber,
@@ -69,4 +71,6 @@ class TicketController extends Controller
         $ticket->update(['status' => 'cerrado']);
         return redirect()->route('tickets.index')->with('success', 'Ticket cerrado');
     }
+
+    
 }

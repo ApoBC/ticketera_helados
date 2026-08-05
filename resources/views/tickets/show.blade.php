@@ -104,7 +104,7 @@
                                         <option value="{{ $product->id }}" 
                                             data-category="{{ $product->category }}"
                                             data-name="{{ $product->name }}"
-                                            data-price="{{ $product->base_price }}">
+                                            data-price="{{ $product->formatted_price }}">
                                             {{ $product->name }} ({{ $product->category }})
                                         </option>
                                     @endforeach
