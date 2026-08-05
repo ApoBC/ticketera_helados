@@ -22,4 +22,9 @@ class Ticket extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    // Agrega este accessor
+public function getFormattedTotalAttribute()
+{
+    return 'S/ ' . number_format($this->total, 2);
+}
 }

@@ -33,4 +33,15 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    // Agrega este accessor
+public function getFormattedUnitPriceAttribute()
+{
+    return 'S/ ' . number_format($this->unit_price, 2);
+}
+
+public function getFormattedSubtotalAttribute()
+{
+    return 'S/ ' . number_format($this->subtotal, 2);
+}
 }
