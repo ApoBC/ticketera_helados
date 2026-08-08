@@ -25,5 +25,12 @@ class ProductSeeder extends Seeder
         foreach ($products as $product) {
             Product::create($product);
         }
+
+        
+    }
+    // Accessor para precio formateado
+    public function getFormattedPriceAttribute(): string
+    {
+        return 'S/ ' . number_format($this->base_price, 2);
     }
 }

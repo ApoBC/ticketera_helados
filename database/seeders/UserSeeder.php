@@ -1,0 +1,37 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+class UserSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // Administrador
+        User::create([
+            'name' => 'Administrador',
+            'email' => 'admin@heladeria.com',
+            'password' => Hash::make('admin123'),
+            'role' => 'admin',
+        ]);
+
+        // Vendedor
+        User::create([
+            'name' => 'Vendedor',
+            'email' => 'vendedor@heladeria.com',
+            'password' => Hash::make('vendedor123'),
+            'role' => 'vendedor',
+        ]);
+
+        // Vendedor adicional
+        User::create([
+            'name' => 'María López',
+            'email' => 'maria@heladeria.com',
+            'password' => Hash::make('vendedor123'),
+            'role' => 'vendedor',
+        ]);
+    }
+}

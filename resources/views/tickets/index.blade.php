@@ -10,7 +10,9 @@
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3">Tickets del día {{ \Carbon\Carbon::now()->format('d/m/Y') }}</h1>
-            <a href="{{ route('tickets.create') }}" class="btn btn-primary">+ Nuevo Ticket</a>
+            <a href="{{ route('vendedor.tickets.create') }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300">
+    <i class="fas fa-plus-circle"></i> Nuevo Ticket
+</a>
         </div>
 
         @if(session('success'))
