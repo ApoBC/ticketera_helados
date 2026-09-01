@@ -37,6 +37,11 @@ class User extends Authenticatable
     }
 
     // Métodos de ayuda para roles
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -47,4 +52,17 @@ class User extends Authenticatable
         return $this->role === 'vendedor';
     }
 
+    /**
+     * Un superadmin también cuenta como admin para efectos de permisos
+     * (puede hacer todo lo que hace un admin, y más).
+     */
+    public function isAdminOrAbove(): bool
+    {
+        return in_array($this->role, ['superadmin', 'admin']);
+    }
+
+    public function hasRole(string ...$roles): bool
+    {
+        return in_array($this->role, $roles);
+    }
 }

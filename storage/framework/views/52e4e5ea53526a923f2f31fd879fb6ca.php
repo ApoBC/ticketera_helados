@@ -58,4 +58,4 @@
         <a href="/dashboard" class="btn">Ir al Dashboard</a>
     </div>
 </body>
-</html><?php /**PATH C:\xampp\htdocs\Heladeria v1\ticketera_helados\resources\views/welcome.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\xampp\htdocs\HeladeriaC\ticketera_helados\resources\views/welcome.blade.php ENDPATH**/ ?>

@@ -132,6 +132,10 @@
             <td class="text-left bold">Cliente:</td>
             <td class="text-right"><?php echo e($ticket->customer_name); ?></td>
         </tr>
+        <tr>
+            <td class="text-left bold">Atendido por:</td>
+            <td class="text-right"><?php echo e($ticket->user->name ?? 'N/D'); ?></td>
+        </tr>
     </table>
     
     <div class="divider-double"></div>
@@ -281,4 +285,4 @@
         };
     </script>
 </body>
-</html><?php /**PATH C:\xampp\htdocs\Heladeria v1\ticketera_helados\resources\views/tickets/print.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\xampp\htdocs\HeladeriaC\ticketera_helados\resources\views/tickets/print.blade.php ENDPATH**/ ?>

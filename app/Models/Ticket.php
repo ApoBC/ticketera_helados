@@ -11,6 +11,7 @@ class Ticket extends Model
         'customer_name',
         'total',
         'status',
+        'user_id',
     ];
 
     protected $casts = [
@@ -21,6 +22,12 @@ class Ticket extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    // Relación: un ticket fue registrado por un usuario (trabajador/admin)
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
     // Agrega este accessor
 public function getFormattedTotalAttribute()

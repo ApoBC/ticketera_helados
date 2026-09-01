@@ -7,13 +7,15 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
     // Lista de tickets del día
     public function index()
     {
-        $tickets = Ticket::whereDate('created_at', Carbon::today())
+        $tickets = Ticket::with('user')
+                    ->whereDate('created_at', Carbon::today())
                     ->orderBy('created_at', 'desc')
                     ->get();
         return view('tickets.index', compact('tickets'));
@@ -44,14 +46,13 @@ class TicketController extends Controller
                         ->first();
         $nextNumber = $lastToday ? ((int) substr($lastToday->ticket_number, -4)) + 1 : 1;
         $ticketNumber = Carbon::now()->format('Ymd') . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-        // Al cargar los productos para el formulario de agregar
-$productos = Product::whereIn('category', ['helado', 'postre', 'bebida'])->get();
 
         $ticket = Ticket::create([
             'ticket_number' => $ticketNumber,
             'customer_name' => $request->customer_name,
             'total' => 0,
             'status' => 'abierto',
+            'user_id' => auth()->id(),
         ]);
 
         return redirect()->route('tickets.show', $ticket);
@@ -60,7 +61,7 @@ $productos = Product::whereIn('category', ['helado', 'postre', 'bebida'])->get()
     // Mostrar detalle del ticket y formulario para agregar ítems
     public function show(Ticket $ticket)
     {
-        $ticket->load('items'); // relación orderItems
+        $ticket->load('items', 'user'); // relación orderItems + quién lo creó
         $products = Product::where('is_active', 1)->get(); // catálogo de productos
         return view('tickets.show', compact('ticket', 'products'));
     }
@@ -68,7 +69,7 @@ $productos = Product::whereIn('category', ['helado', 'postre', 'bebida'])->get()
     // Vista para impresión térmica
     public function print(Ticket $ticket)
     {
-        $ticket->load('items');
+        $ticket->load('items', 'user');
         return view('tickets.print', compact('ticket'));
     }
 
@@ -83,11 +84,11 @@ $productos = Product::whereIn('category', ['helado', 'postre', 'bebida'])->get()
 
 public function vendedorDashboard()
 {
-    $ticketsHoy = Ticket::whereDate('created_at', Carbon::today())
+    $ticketsHoy = Ticket::with('user')->whereDate('created_at', Carbon::today())
         ->orderBy('created_at', 'desc')
         ->get();
     
-    $ticketsActivos = Ticket::where('status', 'abierto')
+    $ticketsActivos = Ticket::with('user')->where('status', 'abierto')
         ->orderBy('created_at', 'desc')
         ->get();
     
@@ -122,23 +123,35 @@ public function addItem(Request $request, Ticket $ticket)
         return back()->with('error', 'No se pueden agregar productos a un ticket cerrado');
     }
 
-    $product = Product::find($request->product_id);
+    $product = Product::findOrFail($request->product_id);
+
+    // Si el producto controla stock, verificar disponibilidad antes de vender
+    if ($product->tracksStock() && $product->stock < $request->quantity) {
+        return back()->with('error', "Stock insuficiente de \"{$product->name}\". Disponible: {$product->stock}");
+    }
+
     $subtotal = $product->base_price * $request->quantity;
 
-    // Crear el item
-    OrderItem::create([
-        'ticket_id' => $ticket->id,
-        'product_id' => $product->id,
-        'product_name' => $product->name,
-        'options' => null,
-        'quantity' => $request->quantity,
-        'unit_price' => $product->base_price,
-        'subtotal' => $subtotal,
-    ]);
+    DB::transaction(function () use ($ticket, $product, $request, $subtotal) {
+        // Crear el item
+        OrderItem::create([
+            'ticket_id' => $ticket->id,
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'options' => null,
+            'quantity' => $request->quantity,
+            'unit_price' => $product->base_price,
+            'subtotal' => $subtotal,
+        ]);
 
-    // Actualizar el total del ticket
-    $ticket->total += $subtotal;
-    $ticket->save();
+        // Descontar del inventario (solo si el producto controla stock)
+        if ($product->tracksStock()) {
+            $product->decrement('stock', $request->quantity);
+        }
+
+        // Actualizar el total del ticket
+        $ticket->increment('total', $subtotal);
+    });
 
     return redirect()->route('tickets.show', $ticket)
         ->with('success', 'Producto agregado al ticket');

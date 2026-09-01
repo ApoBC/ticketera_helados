@@ -1,58 +1,187 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🍦 Ticketera de Helados
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web de punto de venta para una heladería: gestión de productos (helados, toppings, bebidas, postres), control de stock, creación de tickets/pedidos, y reportes de ventas del día. Pensado para usarse en una tablet o pantalla táctil en el área de recepción.
 
-## About Laravel
+Construido con **Laravel 13** + **Blade** + **Tailwind CSS** + **MySQL**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 👥 Roles del sistema
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Rol | Puede hacer |
+|---|---|
+| **Superadmin** | Todo lo del admin, + crear/editar/eliminar administradores, cambiar el rol de cualquier usuario |
+| **Admin** | Gestionar productos y precios, ver ventas del día, crear y editar **vendedores** (su equipo) |
+| **Vendedor** | Crear tickets, agregar productos, cerrar tickets, ver sus ventas del día |
 
-## Learning Laravel
+Cualquier usuario (sin importar el rol) puede cambiar su propia contraseña desde el ícono 🔑 en la barra de navegación.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ✅ Funcionalidades
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- Autenticación con roles (superadmin / admin / vendedor)
+- CRUD de productos por categoría (helado, topping, bebida, postre, otro), con activar/desactivar
+- Control de stock por producto, con alertas de stock bajo y agotado
+- Creación de tickets con trazabilidad (queda registrado quién lo hizo)
+- Pantalla táctil para agregar productos al ticket (tarjetas grandes, filtro por categoría)
+- Impresión de ticket en formato térmico (80mm)
+- Dashboard de ventas del día: por trabajador y por producto
+- Gestión de equipo: el admin agrega/edita vendedores, el superadmin gestiona a todos
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 🛠️ Requisitos previos
+
+- PHP >= 8.3 con extensiones: `curl`, `mbstring`, `openssl`, `pdo_mysql`, `zip`, `fileinfo`
+- Composer
+- Node.js + npm
+- MySQL (o MariaDB)
+- (Opcional) XAMPP, si prefieres un entorno todo-en-uno en Windows
+
+---
+
+## 🚀 Instalación
+
+### 1. Clonar el repositorio
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/ApoBC/ticketera_helados.git
+cd ticketera_helados
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Instalar dependencias de PHP
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Instalar dependencias de frontend
 
-## Code of Conduct
+```bash
+npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Configurar el entorno
 
-## Security Vulnerabilities
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Edita `.env` y completa los datos de tu base de datos MySQL:
 
-## License
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ticketera_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> ⚠️ Si tu contraseña de MySQL tiene caracteres especiales (`=`, `#`, espacios), ponla entre comillas: `DB_PASSWORD="tu-clave"`. De lo contrario Laravel no podrá leer el `.env`.
+
+### 5. Crear la base de datos
+
+Crea manualmente en MySQL una base de datos vacía con el nombre que pusiste en `DB_DATABASE` (por ejemplo `ticketera_db`).
+
+### 6. Ejecutar migraciones y datos de ejemplo
+
+```bash
+php artisan migrate
+php artisan db:seed --class=UserSeeder
+php artisan db:seed --class=DatabaseSeeder
+```
+
+Esto crea los usuarios de prueba y algunos productos de ejemplo (incluyendo casos con stock bajo y agotado, para ver las alertas funcionando).
+
+### 7. Compilar los assets del frontend
+
+```bash
+npm run build
+```
+
+Usa `npm run dev` en su lugar si vas a estar editando estilos/vistas seguido (recompila automáticamente).
+
+### 8. Levantar el servidor
+
+```bash
+php artisan serve
+```
+
+Abre [http://localhost:8000](http://localhost:8000) en el navegador.
+
+---
+
+## 🔑 Usuarios de prueba (creados por el seeder)
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| Superadmin | `superadmin@heladeria.com` | `cambiar123` |
+| Admin | `admin@heladeria.com` | `admin123` |
+| Vendedor | `vendedor@heladeria.com` | `vendedor123` |
+| Vendedor | `maria@heladeria.com` | `vendedor123` |
+
+> ⚠️ Cambia estas contraseñas antes de usar el sistema en producción (puedes hacerlo desde el ícono 🔑 una vez logueado).
+
+---
+
+## 📁 Estructura relevante
+
+```
+app/Http/Controllers/
+  AuthController.php        → login / registro / logout
+  AccountController.php     → cambio de contraseña propia
+  UserController.php        → gestión de equipo (admin/superadmin)
+  ProductController.php     → CRUD de productos y stock
+  TicketController.php      → tickets y sus ítems
+  ReportController.php      → dashboard de ventas del día
+
+database/migrations/        → historial de cambios de la base de datos
+database/seeders/           → usuarios y productos de ejemplo
+
+resources/views/
+  auth/                      → login, registro
+  admin/                     → panel admin, productos, equipo, reportes
+  superadmin/                → panel superadmin
+  vendedor/                  → dashboard del vendedor
+  tickets/                   → crear, ver, imprimir tickets
+  account/                   → cambio de contraseña
+```
+
+---
+
+## 🌿 Flujo de ramas Git
+
+- `main` → rama estable, solo código probado
+- `desarrollo` → integración diaria de funcionalidades
+- `feature/*` → una rama por funcionalidad nueva
+
+```bash
+git checkout desarrollo
+git checkout -b feature/nombre-de-la-funcionalidad
+# ... trabajar y hacer commits ...
+git checkout desarrollo
+git merge feature/nombre-de-la-funcionalidad
+# cuando desarrollo esté estable:
+git checkout main
+git merge desarrollo
+```
+
+---
+
+## ⚠️ Pendiente conocido
+
+El carrito de la pantalla "Crear Ticket" arma la selección de productos en el navegador, pero el backend (`TicketController::store`) todavía no procesa ese carrito — solo crea el ticket vacío. Por ahora, los productos se agregan uno por uno desde la pantalla del ticket ya creado (que sí tiene la interfaz táctil completa).
+
+---
+
+## 🧰 Comandos útiles
+
+```bash
+php artisan migrate:fresh --seed   # Reinicia la base de datos desde cero con datos de ejemplo
+php artisan route:list             # Ver todas las rutas registradas
+php artisan tinker                 # Consola interactiva de Laravel
+npm run dev                        # Modo desarrollo con recarga automática de assets
+```

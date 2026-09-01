@@ -132,6 +132,10 @@
             <td class="text-left bold">Cliente:</td>
             <td class="text-right">{{ $ticket->customer_name }}</td>
         </tr>
+        <tr>
+            <td class="text-left bold">Atendido por:</td>
+            <td class="text-right">{{ $ticket->user->name ?? 'N/D' }}</td>
+        </tr>
     </table>
     
     <div class="divider-double"></div>

@@ -28,6 +28,7 @@
                         <tr>
                             <th>Ticket #</th>
                             <th>Cliente</th>
+                            <th>Vendedor</th>
                             <th>Total</th>
                             <th>Estado</th>
                             <th>Hora</th>
@@ -39,6 +40,7 @@
                             <tr>
                                 <td>{{ $ticket->ticket_number }}</td>
                                 <td>{{ $ticket->customer_name }}</td>
+                                <td>{{ $ticket->user->name ?? '—' }}</td>
                                 <td>${{ number_format($ticket->total, 2) }}</td>
                                 <td>
                                     <span class="badge bg-{{ $ticket->status === 'abierto' ? 'success' : 'secondary' }}">

@@ -48,18 +48,24 @@ class DatabaseSeeder extends Seeder
                 'category' => 'helado',
                 'base_price' => 8.00,
                 'is_active' => true,
+                'stock' => 20,
+                'low_stock_threshold' => 5,
             ],
             [
                 'name' => 'Helado de Chocolate',
                 'category' => 'helado',
                 'base_price' => 8.50,
                 'is_active' => true,
+                'stock' => 3, // ejemplo de stock bajo, para ver la alerta funcionando
+                'low_stock_threshold' => 5,
             ],
             [
                 'name' => 'Helado de Fresa',
                 'category' => 'helado',
                 'base_price' => 8.00,
                 'is_active' => true,
+                'stock' => 15,
+                'low_stock_threshold' => 5,
             ],
             [
                 'name' => 'Brownie con Helado',
@@ -72,6 +78,30 @@ class DatabaseSeeder extends Seeder
                 'category' => 'postre',
                 'base_price' => 10.00,
                 'is_active' => true,
+            ],
+            [
+                'name' => 'Chispas de Chocolate',
+                'category' => 'topping',
+                'base_price' => 1.50,
+                'is_active' => true,
+                'stock' => 30,
+                'low_stock_threshold' => 8,
+            ],
+            [
+                'name' => 'Sirope de Fresa',
+                'category' => 'topping',
+                'base_price' => 1.50,
+                'is_active' => true,
+                'stock' => 30,
+                'low_stock_threshold' => 8,
+            ],
+            [
+                'name' => 'Grageas de Colores',
+                'category' => 'topping',
+                'base_price' => 1.00,
+                'is_active' => true,
+                'stock' => 0, // ejemplo de producto agotado
+                'low_stock_threshold' => 8,
             ],
         ];
 

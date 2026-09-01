@@ -12,7 +12,12 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Host Grotesk', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                ink: '#0C0D0D',
+                mint: '#ECF4EE',
+                offwhite: '#FAFAFA',
             },
         },
     },

@@ -36,7 +36,7 @@
                         Nombre del Cliente <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="customer_name" id="customer_name" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500 @error('customer_name') border-red-500 @enderror" 
+                           class="w-full h-14 px-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500 @error('customer_name') border-red-500 @enderror" 
                            value="{{ old('customer_name') }}" required autofocus>
                     @error('customer_name')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -171,16 +171,16 @@
                     </div>
                     <div class="flex items-center space-x-2">
                         <button type="button" onclick="updateQuantity(${item.id}, -1)" 
-                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-6 h-6 rounded-full text-sm">
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-10 h-10 rounded-full text-lg font-bold active:scale-90 transition-transform">
                             -
                         </button>
-                        <span class="text-sm font-semibold w-6 text-center">${item.quantity}</span>
+                        <span class="text-base font-semibold w-6 text-center">${item.quantity}</span>
                         <button type="button" onclick="updateQuantity(${item.id}, 1)" 
-                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-6 h-6 rounded-full text-sm">
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-10 h-10 rounded-full text-lg font-bold active:scale-90 transition-transform">
                             +
                         </button>
                         <button type="button" onclick="removeFromCart(${item.id})" 
-                                class="text-red-500 hover:text-red-700 ml-2">
+                                class="text-red-500 hover:text-red-700 ml-2 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>

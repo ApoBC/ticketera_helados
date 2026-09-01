@@ -7,13 +7,13 @@
     <title>@yield('title', 'Heladería')</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=host-grotesk:400,500,600,700,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gradient-to-br from-pink-100 via-yellow-100 to-blue-100">
+    <div class="min-h-screen bg-mint">
         <!-- SOLO UNA VEZ: Incluir la navegación -->
         @include('layouts.navigation')
 

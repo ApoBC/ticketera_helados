@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Ticket #' . $ticket->ticket_number); ?>
 
-@section('title', 'Ticket #' . $ticket->ticket_number)
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-4xl mx-auto">
         <!-- Cabecera -->
@@ -11,45 +9,49 @@
                 <div class="flex items-center">
                     <div class="text-4xl mr-4">🧾</div>
                     <div>
-                        <h2 class="text-2xl font-bold text-yellow-600">Ticket #{{ $ticket->ticket_number }}</h2>
-                        <p class="text-gray-600">Cliente: {{ $ticket->customer_name }}</p>
-                        <p class="text-sm text-gray-500">{{ $ticket->created_at->format('d/m/Y H:i') }}</p>
+                        <h2 class="text-2xl font-bold text-yellow-600">Ticket #<?php echo e($ticket->ticket_number); ?></h2>
+                        <p class="text-gray-600">Cliente: <?php echo e($ticket->customer_name); ?></p>
+                        <p class="text-sm text-gray-500"><?php echo e($ticket->created_at->format('d/m/Y H:i')); ?></p>
                         <p class="text-sm text-gray-500">
-                            <i class="fas fa-user"></i> Registrado por: {{ $ticket->user->name ?? 'Usuario eliminado' }}
+                            <i class="fas fa-user"></i> Registrado por: <?php echo e($ticket->user->name ?? 'Usuario eliminado'); ?>
+
                         </p>
                     </div>
                 </div>
                 <div>
                     <span class="px-4 py-2 rounded-full text-sm font-bold 
-                        @if($ticket->status === 'abierto') bg-yellow-100 text-yellow-800
-                        @else bg-green-100 text-green-800 @endif">
-                        {{ ucfirst($ticket->status) }}
+                        <?php if($ticket->status === 'abierto'): ?> bg-yellow-100 text-yellow-800
+                        <?php else: ?> bg-green-100 text-green-800 <?php endif; ?>">
+                        <?php echo e(ucfirst($ticket->status)); ?>
+
                     </span>
                 </div>
             </div>
         </div>
 
         <!-- Mensajes -->
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
-                {{ session('success') }}
+                <?php echo e(session('success')); ?>
+
             </div>
-        @endif
-        @if(session('error'))
+        <?php endif; ?>
+        <?php if(session('error')): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
-                {{ session('error') }}
+                <?php echo e(session('error')); ?>
+
             </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Agregar producto (solo si está abierto) -->
-        @if($ticket->status === 'abierto')
+        <?php if($ticket->status === 'abierto'): ?>
             <div class="bg-white rounded-xl shadow-md p-6 mb-6 border-2 border-dashed border-yellow-200">
                 <h4 class="text-lg font-semibold text-gray-700 mb-4">
                     <i class="fas fa-plus-circle text-green-500"></i> Agregar Producto
                 </h4>
 
-                <form action="{{ route('tickets.items.store', $ticket) }}" method="POST" id="addItemForm">
-                    @csrf
+                <form action="<?php echo e(route('tickets.items.store', $ticket)); ?>" method="POST" id="addItemForm">
+                    <?php echo csrf_field(); ?>
                     <input type="hidden" name="product_id" id="selected_product_id">
                     <input type="hidden" name="quantity" id="selected_quantity" value="1">
 
@@ -59,43 +61,44 @@
                                 class="cat-tab px-5 py-3 rounded-full font-semibold text-sm border-2 border-yellow-400 bg-yellow-400 text-white">
                             Todos
                         </button>
-                        @foreach($products->pluck('category')->unique() as $cat)
-                            <button type="button" data-category="{{ $cat }}"
+                        <?php $__currentLoopData = $products->pluck('category')->unique(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <button type="button" data-category="<?php echo e($cat); ?>"
                                     class="cat-tab px-5 py-3 rounded-full font-semibold text-sm border-2 border-yellow-300 text-yellow-700 bg-white">
-                                {{ ucfirst($cat) }}
+                                <?php echo e(ucfirst($cat)); ?>
+
                             </button>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
 
                     <!-- Grilla de productos (tarjetas grandes, táctiles) -->
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-5" id="productGrid">
-                        @foreach($products as $product)
+                        <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <button type="button"
-                                    data-category="{{ $product->category }}"
-                                    data-id="{{ $product->id }}"
-                                    data-name="{{ $product->name }}"
-                                    data-price="{{ $product->base_price }}"
-                                    @disabled($product->isOutOfStock())
+                                    data-category="<?php echo e($product->category); ?>"
+                                    data-id="<?php echo e($product->id); ?>"
+                                    data-name="<?php echo e($product->name); ?>"
+                                    data-price="<?php echo e($product->base_price); ?>"
+                                    <?php if($product->isOutOfStock()): echo 'disabled'; endif; ?>
                                     class="product-tile min-h-[110px] rounded-2xl border-2 border-gray-200 p-3 flex flex-col items-center justify-center text-center transition-all
                                            active:scale-95 hover:border-yellow-400 hover:shadow-md
                                            disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200">
                                 <div class="text-3xl mb-1">
-                                    @if($product->category === 'helado') 🍦
-                                    @elseif($product->category === 'topping') 🍫
-                                    @elseif($product->category === 'postre') 🍰
-                                    @elseif($product->category === 'bebida') 🥤
-                                    @else 📦
-                                    @endif
+                                    <?php if($product->category === 'helado'): ?> 🍦
+                                    <?php elseif($product->category === 'topping'): ?> 🍫
+                                    <?php elseif($product->category === 'postre'): ?> 🍰
+                                    <?php elseif($product->category === 'bebida'): ?> 🥤
+                                    <?php else: ?> 📦
+                                    <?php endif; ?>
                                 </div>
-                                <div class="text-sm font-bold text-gray-800 leading-tight">{{ $product->name }}</div>
-                                <div class="text-sm font-semibold text-yellow-600">S/ {{ number_format($product->base_price, 2) }}</div>
-                                @if($product->isOutOfStock())
+                                <div class="text-sm font-bold text-gray-800 leading-tight"><?php echo e($product->name); ?></div>
+                                <div class="text-sm font-semibold text-yellow-600">S/ <?php echo e(number_format($product->base_price, 2)); ?></div>
+                                <?php if($product->isOutOfStock()): ?>
                                     <div class="text-xs font-bold text-red-500 mt-1">AGOTADO</div>
-                                @elseif($product->isLowStock())
-                                    <div class="text-xs font-bold text-orange-500 mt-1">Quedan {{ $product->stock }}</div>
-                                @endif
+                                <?php elseif($product->isLowStock()): ?>
+                                    <div class="text-xs font-bold text-orange-500 mt-1">Quedan <?php echo e($product->stock); ?></div>
+                                <?php endif; ?>
                             </button>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
 
                     <!-- Producto seleccionado + cantidad (aparece al elegir un producto) -->
@@ -184,20 +187,20 @@
                     });
                 })();
             </script>
-        @endif
+        <?php endif; ?>
 
         <!-- Items del ticket -->
         <div class="bg-white rounded-2xl shadow-xl p-6 border-2 border-gray-200">
             <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center">
                 <i class="fas fa-list text-yellow-500 mr-2"></i> Productos
-                <span class="ml-2 text-sm text-gray-500">({{ $ticket->items->count() }})</span>
+                <span class="ml-2 text-sm text-gray-500">(<?php echo e($ticket->items->count()); ?>)</span>
             </h3>
 
-            @if($ticket->items->isEmpty())
+            <?php if($ticket->items->isEmpty()): ?>
                 <div class="bg-gray-50 rounded-xl p-8 text-center">
                     <p class="text-gray-500">No hay productos en este ticket</p>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50">
@@ -209,45 +212,47 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($ticket->items as $item)
+                            <?php $__currentLoopData = $ticket->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr class="border-t border-gray-100 hover:bg-yellow-50 transition-colors">
-                                    <td class="px-4 py-3 text-sm text-gray-800">{{ $item->product_name }}</td>
-                                    <td class="px-4 py-3 text-sm text-center text-gray-600">{{ $item->quantity }}</td>
-                                    <td class="px-4 py-3 text-sm text-right text-gray-600">S/ {{ number_format($item->unit_price, 2) }}</td>
-                                    <td class="px-4 py-3 text-sm text-right font-bold text-yellow-600">S/ {{ number_format($item->subtotal, 2) }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-800"><?php echo e($item->product_name); ?></td>
+                                    <td class="px-4 py-3 text-sm text-center text-gray-600"><?php echo e($item->quantity); ?></td>
+                                    <td class="px-4 py-3 text-sm text-right text-gray-600">S/ <?php echo e(number_format($item->unit_price, 2)); ?></td>
+                                    <td class="px-4 py-3 text-sm text-right font-bold text-yellow-600">S/ <?php echo e(number_format($item->subtotal, 2)); ?></td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             <tr class="border-t-2 border-gray-300 bg-gray-50">
                                 <td colspan="3" class="px-4 py-3 text-right font-bold text-gray-700">TOTAL</td>
-                                <td class="px-4 py-3 text-right font-bold text-yellow-600 text-lg">S/ {{ number_format($ticket->total, 2) }}</td>
+                                <td class="px-4 py-3 text-right font-bold text-yellow-600 text-lg">S/ <?php echo e(number_format($ticket->total, 2)); ?></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Acciones -->
         <div class="mt-6 flex flex-wrap gap-3">
-            <a href="{{ route('vendedor.dashboard') }}" class="h-14 flex items-center bg-gray-500 hover:bg-gray-600 text-white text-base font-semibold py-2 px-6 rounded-full transition-all duration-300 active:scale-95">
+            <a href="<?php echo e(route('vendedor.dashboard')); ?>" class="h-14 flex items-center bg-gray-500 hover:bg-gray-600 text-white text-base font-semibold py-2 px-6 rounded-full transition-all duration-300 active:scale-95">
                 <i class="fas fa-arrow-left mr-2"></i> Volver
             </a>
             
-            <a href="{{ route('tickets.print', $ticket) }}" target="_blank" class="h-14 flex items-center bg-blue-500 hover:bg-blue-600 text-white text-base font-semibold py-2 px-6 rounded-full transition-all duration-300 active:scale-95">
+            <a href="<?php echo e(route('tickets.print', $ticket)); ?>" target="_blank" class="h-14 flex items-center bg-blue-500 hover:bg-blue-600 text-white text-base font-semibold py-2 px-6 rounded-full transition-all duration-300 active:scale-95">
                 <i class="fas fa-print mr-2"></i> Imprimir
             </a>
 
-            @if($ticket->status === 'abierto')
-                <form method="POST" action="{{ route('tickets.close', $ticket) }}" class="inline">
-                    @csrf
-                    @method('PATCH')
+            <?php if($ticket->status === 'abierto'): ?>
+                <form method="POST" action="<?php echo e(route('tickets.close', $ticket)); ?>" class="inline">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PATCH'); ?>
                     <button type="submit" class="h-14 flex items-center bg-green-500 hover:bg-green-600 text-white text-base font-semibold py-2 px-6 rounded-full transition-all duration-300 active:scale-95" 
                             onclick="return confirm('¿Cerrar este ticket?')">
                         <i class="fas fa-check mr-2"></i> Cerrar Ticket
                     </button>
                 </form>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\HeladeriaC\ticketera_helados\resources\views/tickets/show.blade.php ENDPATH**/ ?>

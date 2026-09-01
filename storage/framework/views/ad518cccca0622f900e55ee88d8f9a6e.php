@@ -28,6 +28,7 @@
                         <tr>
                             <th>Ticket #</th>
                             <th>Cliente</th>
+                            <th>Vendedor</th>
                             <th>Total</th>
                             <th>Estado</th>
                             <th>Hora</th>
@@ -39,6 +40,7 @@
                             <tr>
                                 <td><?php echo e($ticket->ticket_number); ?></td>
                                 <td><?php echo e($ticket->customer_name); ?></td>
+                                <td><?php echo e($ticket->user->name ?? '—'); ?></td>
                                 <td>$<?php echo e(number_format($ticket->total, 2)); ?></td>
                                 <td>
                                     <span class="badge bg-<?php echo e($ticket->status === 'abierto' ? 'success' : 'secondary'); ?>">
@@ -65,4 +67,4 @@
         <?php endif; ?>
     </div>
 </body>
-</html><?php /**PATH C:\xampp\htdocs\Heladeria v1\ticketera_helados\resources\views/tickets/index.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\xampp\htdocs\HeladeriaC\ticketera_helados\resources\views/tickets/index.blade.php ENDPATH**/ ?>
