@@ -10,11 +10,12 @@ use App\Http\Controllers\AccountController;
 use App\Models\Product;
 
 // Rutas de autenticación
+// Rutas de autenticación - CON AUDITORÍA
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('audit');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/register', [AuthController::class, 'register'])->middleware('audit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('audit');
 // Ruta principal
 Route::get('/', function () {
     return view('welcome');
@@ -26,7 +27,7 @@ Route::get('/dashboard', function () {
 })->middleware('auth')->name('dashboard');
 
 // Rutas protegidas por roles
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'audit'])->group(function () {
 
     // Rutas de tickets (compartidas por todos los roles autenticados)
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
@@ -95,4 +96,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/vendedor/tickets', [TicketController::class, 'store'])
             ->name('vendedor.tickets.store');
     });
+
+
+    // ✅ EN routes/web.php
+Route::post('/register', [AuthController::class, 'register'])
+    ->middleware('throttle:5,15'); // 5 intentos por 15 minutos
 });

@@ -61,6 +61,11 @@ class TicketController extends Controller
     // Mostrar detalle del ticket y formulario para agregar ítems
     public function show(Ticket $ticket)
     {
+        
+        if ($ticket->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        abort(403, 'No tienes permiso para ver este ticket');
+    }
+
         $ticket->load('items', 'user'); // relación orderItems + quién lo creó
         $products = Product::where('is_active', 1)->get(); // catálogo de productos
         return view('tickets.show', compact('ticket', 'products'));
@@ -69,6 +74,11 @@ class TicketController extends Controller
     // Vista para impresión térmica
     public function print(Ticket $ticket)
     {
+        // ✅ AGREGAR ESTAS LÍNEAS
+    if ($ticket->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        abort(403, 'No tienes permiso para imprimir este ticket');
+    }
+
         $ticket->load('items', 'user');
         return view('tickets.print', compact('ticket'));
     }
@@ -76,7 +86,10 @@ class TicketController extends Controller
     // Cerrar ticket (cambiar estado)
     public function close(Ticket $ticket)
     {
-        $ticket->update(['status' => 'cerrado']);
+    if ($ticket->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        abort(403, 'No tienes permiso para ver este ticket'); 
+    }
+    $ticket->update(['status' => 'cerrado']);
         return redirect()->route('tickets.index')->with('success', 'Ticket cerrado');
     }
 // app/Http/Controllers/TicketController.php
@@ -118,6 +131,10 @@ public function addItem(Request $request, Ticket $ticket)
         'quantity' => 'required|integer|min:1',
     ]);
 
+
+        if ($ticket->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        abort(403, 'No tienes permiso para editar este ticket');
+    }
     // Verificar que el ticket esté abierto
     if ($ticket->status === 'cerrado') {
         return back()->with('error', 'No se pueden agregar productos a un ticket cerrado');
