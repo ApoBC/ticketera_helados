@@ -1,4 +1,4 @@
-# 🍦 Ticketera de Helados
+🍦óñí📋óóííáí✅✅óí✅✅✅í✅ó✅áí🛠️📦ó👥í✨í📱úááá📊íí🔐óóí🚀áñ⚠️ñó📄👨‍#💻ó 🍦 Ticketera de Helados
 
 Sistema web de punto de venta para una heladería: gestión de productos (helados, toppings, bebidas, postres), control de stock, creación de tickets/pedidos, y reportes de ventas del día. Pensado para usarse en una tablet o pantalla táctil en el área de recepción.
 
